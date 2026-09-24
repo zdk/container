@@ -157,6 +157,8 @@ public struct ProcessIO: Sendable {
     }
 
     public func handleProcess(process: ClientProcess, log: Logger) async throws -> Int32 {
+        try console?.disableOutputProcessing()
+
         let signals = AsyncSignalHandler.create(notify: Self.signalSet)
         return try await withThrowingTaskGroup(of: Int32?.self, returning: Int32.self) { group in
             try await process.start()
@@ -288,6 +290,19 @@ public struct ProcessIO: Sendable {
             case .success:
                 break
             }
+        }
+    }
+}
+
+extension Terminal {
+    func disableOutputProcessing() throws {
+        var attr = termios()
+        guard tcgetattr(handle.fileDescriptor, &attr) == 0 else {
+            throw POSIXError.fromErrno()
+        }
+        attr.c_oflag &= ~tcflag_t(OPOST)
+        guard tcsetattr(handle.fileDescriptor, TCSANOW, &attr) == 0 else {
+            throw POSIXError.fromErrno()
         }
     }
 }
