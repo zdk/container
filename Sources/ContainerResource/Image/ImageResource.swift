@@ -34,12 +34,14 @@ public struct ImageResource: ManagedResource {
         public let size: Int64
         /// The OCI image config for this variant.
         public let config: ContainerizationOCI.Image
+        public let configDigest: String
 
-        public init(platform: Platform, digest: String, size: Int64, config: ContainerizationOCI.Image) {
+        public init(platform: Platform, digest: String, size: Int64, config: ContainerizationOCI.Image, configDigest: String) {
             self.platform = platform
             self.digest = digest
             self.size = size
             self.config = config
+            self.configDigest = configDigest
         }
     }
 

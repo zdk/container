@@ -22,6 +22,7 @@ Use the `inspect` command and send the result to the `jq` command to get pretty-
           "os": "linux",
           "architecture": "arm64"
         },
+        "configDigest": "sha256:...",
         "config": {
           "created": "2025-05-08T22:27:23Z",
           "architecture": "arm64",

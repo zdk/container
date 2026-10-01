@@ -281,6 +281,19 @@ struct TestCLIImagesCommand {
         }
     }
 
+    @Test func testImageInspectShowsConfigDigest() async throws {
+        try await ContainerFixture.with { f in
+            try f.doPull(alpine)
+            let output = try f.doInspectImages(alpine)
+            #expect(output.count == 1)
+            #expect(!output[0].variants.isEmpty, "expected at least one variant")
+            for variant in output[0].variants {
+                #expect(variant.configDigest.hasPrefix("sha256:"), "expected a sha256 config digest in \(variant)")
+                #expect(variant.configDigest != variant.digest, "expected config digest to differ from manifest digest")
+            }
+        }
+    }
+
     @Test func testImageListTableFormat() async throws {
         try await ContainerFixture.with { f in
             try f.doPull(alpine)
